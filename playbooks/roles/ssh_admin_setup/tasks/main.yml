@@ -1,0 +1,5 @@
+---
+# tasks file for ssh_admin_setup
+- import_tasks: configure_ssh.yml
+  
+

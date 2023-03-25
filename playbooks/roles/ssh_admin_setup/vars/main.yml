@@ -1,0 +1,3 @@
+---
+# vars file for ssh_admin_setup
+remote_admin_user: "admin"

@@ -1,0 +1,7 @@
+---
+- hosts: '{{ host | default("all") }}'
+  tasks:
+    - name: Import Role(s)
+      import_role:
+        name: ssh_admin_setup
+      become: yes

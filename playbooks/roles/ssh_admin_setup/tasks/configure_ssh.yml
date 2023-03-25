@@ -1,0 +1,38 @@
+---
+# tasks file for ssh_admin_setup
+- name: Create Local Administrator Account with RSA KeyPair
+  delegate_to: localhost
+  ansible.builtin.user:
+    name: "{{ remote_admin_user }}"
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+
+- name: Configure Remote Password-less Sudo
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: "^{{ remote_admin_user }}"
+    line: "{{ remote_admin_user }} ALL=(ALL) NOPASSWD: ALL"
+    validate: '/usr/sbin/visudo -cf %s'
+
+- name: Create Remote Administrator Account
+  user:
+    name: "{{ remote_admin_user }}"
+    state: present
+    group: sudo
+    append: true
+    create_home: true
+
+- name: Slurp Local RSA PubKey
+  delegate_to: localhost
+  become: yes
+  slurp:
+    src: /home/{{ remote_admin_user }}/.ssh/id_rsa.pub
+  register: pubkey
+
+- name: Configure Authorized Keys for Remote Login
+  ansible.posix.authorized_key:
+    user: "{{ remote_admin_user }}"
+    state: present
+    key: "{{ pubkey['content'] | b64decode }}"
