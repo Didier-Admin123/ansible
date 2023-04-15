@@ -1,0 +1,30 @@
+---
+- hosts: elasticsearch
+  name:  ELK Stack Prov
+  become: true
+
+  tasks:
+    - name: Deploy Elasticsearch 
+      import_role:
+        name: elasticsearch
+
+- hosts: logstash
+  become: true
+  tasks:
+    - name: Deploy Logstash
+      import_role:
+        name: logstash
+
+- hosts: kibana
+  become: true
+  tasks:
+    - name: Deploy Kibana
+      import_role:
+        name: kibana
+
+- hosts: elk_clients
+  become: true
+  tasks:
+    - name: Configure elk_beats Clients
+      import_role:
+        name: elk_beats

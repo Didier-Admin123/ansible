@@ -1,0 +1,37 @@
+---
+# tasks file for elasticsearch
+  - name: Setup ELK repository
+    shell: "{{ item }}"
+    with_items:
+      - "update-crypto-policies --set LEGACY"
+      - "rpm --import https://artifacts.elastIc.co/GPG-KEY-elasticsearch"
+  - name: Setup ELK repository
+    shell:
+      cmd: |
+        cat << EOF > /etc/yum.repos.d/elastic.repo
+        [elasticsearch]
+        name=Elasticsearch repository for 7.x packages
+        baseurl=https://artifacts.elastic.co/packages/7.x/yum
+        gpgcheck=1
+        gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        enabled=1
+        autorefresh=1
+        type=rpm-md
+        EOF
+
+  - name: Install Elasticsearch 
+    yum: 
+      name: elasticsearch
+      state: present
+
+  - name: Configure elasticsearch.yml Install
+    template:
+      src: elasticsearch.yml.j2
+      dest: /etc/elasticsearch/elasticsearch.yml
+
+  - name: Configure elasticsearch service 
+    service:
+      name: elasticsearch 
+      state: started
+      enabled: yes 
+

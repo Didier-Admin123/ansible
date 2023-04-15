@@ -1,0 +1,19 @@
+[all:vars]
+
+[elk_clients]
+172.31.91.118
+
+[kibana_servers]
+kibana ansible_host=172.31.92.180
+
+[logstash_servers]
+logstash ansible_host=172.31.87.20
+
+[elasticsearch_servers]
+elasticsearch ansible_host=172.31.88.142
+
+[elk_servers:children]
+kibana_servers
+logstash_servers
+elasticsearch_servers
+

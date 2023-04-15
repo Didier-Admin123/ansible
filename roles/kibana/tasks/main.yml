@@ -1,0 +1,37 @@
+---
+# tasks file for logstash
+  - name: Setup ELK repository
+    shell: "{{ item }}"
+    with_items:
+      - "update-crypto-policies --set LEGACY"
+      - "rpm --import https://artifacts.elastIc.co/GPG-KEY-elasticsearch"
+  - name: Setup ELK repository
+    shell:
+      cmd: |
+        cat << EOF > /etc/yum.repos.d/elastic.repo
+        [logstash]
+        name=Elasticsearch repository for 7.x packages
+        baseurl=https://artifacts.elastic.co/packages/7.x/yum
+        gpgcheck=1
+        gpgkey=https://artifacts.elastic.co/GPG-KEY-logstash
+        enabled=1
+        autorefresh=1
+        type=rpm-md
+        EOF
+
+  - name: Install kibana 
+    yum: 
+      name: kibana
+      state: present
+
+  - name: Configure kibana.yml Install
+    template:
+      src: kibana.yml.j2
+      dest: /etc/kibana/kibana.yml
+
+  - name: Configure logstash service 
+    service:
+      name: kibana 
+      state: started
+      enabled: yes 
+

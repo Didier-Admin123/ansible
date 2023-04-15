@@ -1,0 +1,4 @@
+server.host: "0.0.0.0"
+{% for item in groups['elasticsearch_servers'] %}
+elasticsearch.hosts: ["http://{{ hostvars[item].ansible_host }}:9200"]
+{% endfor %}

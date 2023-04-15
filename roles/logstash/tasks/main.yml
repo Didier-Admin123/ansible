@@ -1,0 +1,37 @@
+---
+# tasks file for logstash
+  - name: Setup ELK repository
+    shell: "{{ item }}"
+    with_items:
+      - "update-crypto-policies --set LEGACY"
+      - "rpm --import https://artifacts.elastIc.co/GPG-KEY-elasticsearch"
+  - name: Setup ELK repository
+    shell:
+      cmd: |
+        cat << EOF > /etc/yum.repos.d/elastic.repo
+        [logstash]
+        name=Elasticsearch repository for 7.x packages
+        baseurl=https://artifacts.elastic.co/packages/7.x/yum
+        gpgcheck=1
+        gpgkey=https://artifacts.elastic.co/GPG-KEY-logstash
+        enabled=1
+        autorefresh=1
+        type=rpm-md
+        EOF
+
+  - name: Install Logstash 
+    yum: 
+      name: logstash
+      state: present
+
+  - name: Configure logstash.yml Install
+    template:
+      src: beats.conf.j2
+      dest: /etc/logstash/conf.d/beats.conf
+
+  - name: Configure logstash service 
+    service:
+      name: logstash 
+      state: started
+      enabled: yes 
+
