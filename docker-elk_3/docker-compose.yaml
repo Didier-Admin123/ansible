@@ -53,7 +53,7 @@ services:
       - certs:/usr/share/elasticsearch/config/certs
 
   es01:
-    depends_CA:
+    depends_on:
       setup:
         condition: service_healthy
     container_name: es01
