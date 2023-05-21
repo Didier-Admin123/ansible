@@ -54,7 +54,7 @@ services:
 
   es01:
     depends_on:
-      setup:
+      setup_CA:
         condition: service_healthy
     container_name: es01
     restart: unless-stopped
