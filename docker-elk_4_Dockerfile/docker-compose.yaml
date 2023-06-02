@@ -1,0 +1,14 @@
+version: "3.0"
+services:
+  ca_setup:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ca_setup
+    container_name: ca_setup
+    user: "elasticsearch"
+    volumes:
+      - certs:/usr/share/elasticsearch/config/ca_certs
+volumes:
+  certs:
+    driver: local
